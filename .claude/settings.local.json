@@ -12,7 +12,16 @@
       "Bash(mysql:*)",
       "Bash(lsof:*)",
       "Bash(brew services stop:*)",
-      "Bash(sudo launchctl unload:*)"
+      "Bash(sudo launchctl unload:*)",
+      "Bash(tree:*)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss init:*)",
+      "Bash(./node_modules/tailwindcss/lib/cli.js:*)",
+      "Bash(node:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(curl:*)"
     ]
   }
 }
