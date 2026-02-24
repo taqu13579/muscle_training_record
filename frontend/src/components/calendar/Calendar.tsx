@@ -74,12 +74,14 @@ export function Calendar({
         <h2 className="text-lg font-semibold">{monthName}</h2>
         <div className="flex gap-2">
           <button
+            type="button"
             onClick={onPrevMonth}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             &lt;
           </button>
           <button
+            type="button"
             onClick={onNextMonth}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >

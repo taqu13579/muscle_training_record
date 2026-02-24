@@ -24,6 +24,7 @@ export function CalendarDay({
 
   return (
     <button
+      type="button"
       onClick={onClick}
       className={`h-12 rounded-lg flex flex-col items-center justify-center transition-colors relative ${
         isSelected
