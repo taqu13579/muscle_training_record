@@ -21,7 +21,11 @@
       "Bash(node:*)",
       "Bash(npm run build:*)",
       "Bash(npm run dev:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(xargs:*)",
+      "Bash(grep:*)",
+      "Bash(pgrep:*)",
+      "Bash(brew services:*)"
     ]
   }
 }
