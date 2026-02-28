@@ -25,6 +25,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
+    // Security (パスワードハッシュ化のみ)
+    implementation("org.springframework.security:spring-security-crypto")
+
     // Database
     runtimeOnly("com.mysql:mysql-connector-j")
     implementation("org.flywaydb:flyway-core")
