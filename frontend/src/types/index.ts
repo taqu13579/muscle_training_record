@@ -1,3 +1,17 @@
+// ユーザー
+export interface User {
+  id: number;
+  email: string;
+  username: string;
+  createdAt: string | null;
+}
+
+export interface RegisterRequest {
+  email: string;
+  username: string;
+  password: string;
+}
+
 // 部位
 export interface BodyPart {
   id: number;

@@ -4,6 +4,7 @@ import { HomePage } from './pages/HomePage';
 import { RecordDetailPage } from './pages/RecordDetailPage';
 import { RecordFormPage } from './pages/RecordFormPage';
 import { ExercisesPage } from './pages/ExercisesPage';
+import { RegisterPage } from './pages/RegisterPage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <main className="max-w-4xl mx-auto px-4 py-6">
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/register" element={<RegisterPage />} />
             <Route path="/records/:date" element={<RecordDetailPage />} />
             <Route path="/records/new" element={<RecordFormPage />} />
             <Route path="/records/:id/edit" element={<RecordFormPage />} />
