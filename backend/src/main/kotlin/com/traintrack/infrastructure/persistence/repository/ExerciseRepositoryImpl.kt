@@ -39,7 +39,7 @@ class ExerciseRepositoryImpl(
         val bodyPartEntity = jpaBodyPartRepository.findById(exercise.bodyPartId.value)
             .orElseThrow { IllegalArgumentException("BodyPart not found: ${exercise.bodyPartId.value}") }
 
-        val entity = if (exercise.id.value == 1L && jpaRepository.findById(1L).isEmpty) {
+        val entity = if (exercise.id.value == 0L) {
             // New exercise
             ExerciseEntity(
                 name = exercise.name.value,
