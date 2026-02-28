@@ -29,7 +29,7 @@ data class Exercise(
             name: String,
             bodyPartId: Long
         ): Exercise = Exercise(
-            id = ExerciseId(1), // Placeholder, will be assigned by DB
+            id = ExerciseId(0), // 0 indicates new entity, will be assigned by DB
             name = ExerciseName(name),
             bodyPartId = BodyPartId(bodyPartId),
             isActive = true
