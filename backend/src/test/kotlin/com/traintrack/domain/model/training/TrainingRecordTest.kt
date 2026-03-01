@@ -10,6 +10,7 @@ class TrainingRecordTest {
     @Test
     fun `トレーニング記録を作成できる`() {
         val record = TrainingRecord.createNew(
+            userId = 1,
             exerciseId = 1,
             weightKg = BigDecimal("80.00"),
             repCount = 10,
@@ -18,6 +19,7 @@ class TrainingRecordTest {
             memo = "フォームを意識"
         )
 
+        assertEquals(1L, record.userId.value)
         assertEquals(1L, record.exerciseId.value)
         assertEquals(BigDecimal("80.00"), record.weight.value)
         assertEquals(10, record.repCount.value)
@@ -29,6 +31,7 @@ class TrainingRecordTest {
     @Test
     fun `総ボリュームが正しく計算される`() {
         val record = TrainingRecord.createNew(
+            userId = 1,
             exerciseId = 1,
             weightKg = BigDecimal("100.00"),
             repCount = 10,
@@ -43,6 +46,7 @@ class TrainingRecordTest {
     @Test
     fun `重量を更新できる`() {
         val record = TrainingRecord.createNew(
+            userId = 1,
             exerciseId = 1,
             weightKg = BigDecimal("80.00"),
             repCount = 10,
@@ -57,6 +61,7 @@ class TrainingRecordTest {
     @Test
     fun `回数を更新できる`() {
         val record = TrainingRecord.createNew(
+            userId = 1,
             exerciseId = 1,
             weightKg = BigDecimal("80.00"),
             repCount = 10,

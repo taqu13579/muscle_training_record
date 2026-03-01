@@ -10,15 +10,17 @@ import java.time.LocalDate
 
 @Repository
 interface JpaTrainingRecordRepository : JpaRepository<TrainingRecordEntity, Long> {
-    @Query("SELECT t FROM TrainingRecordEntity t JOIN FETCH t.exercise e JOIN FETCH e.bodyPart")
-    fun findAllWithExercise(pageable: Pageable): Page<TrainingRecordEntity>
+    @Query("SELECT t FROM TrainingRecordEntity t JOIN FETCH t.exercise e JOIN FETCH e.bodyPart WHERE t.userId = :userId")
+    fun findAllByUserIdWithExercise(userId: Long, pageable: Pageable): Page<TrainingRecordEntity>
 
-    @Query("SELECT t FROM TrainingRecordEntity t JOIN FETCH t.exercise e JOIN FETCH e.bodyPart WHERE t.id = :id")
-    fun findByIdWithExercise(id: Long): TrainingRecordEntity?
+    @Query("SELECT t FROM TrainingRecordEntity t JOIN FETCH t.exercise e JOIN FETCH e.bodyPart WHERE t.id = :id AND t.userId = :userId")
+    fun findByIdAndUserIdWithExercise(id: Long, userId: Long): TrainingRecordEntity?
 
-    @Query("SELECT t FROM TrainingRecordEntity t JOIN FETCH t.exercise e JOIN FETCH e.bodyPart WHERE t.trainingDate = :date ORDER BY t.createdAt DESC")
-    fun findByTrainingDateWithExercise(date: LocalDate): List<TrainingRecordEntity>
+    @Query("SELECT t FROM TrainingRecordEntity t JOIN FETCH t.exercise e JOIN FETCH e.bodyPart WHERE t.userId = :userId AND t.trainingDate = :date ORDER BY t.createdAt DESC")
+    fun findByUserIdAndTrainingDateWithExercise(userId: Long, date: LocalDate): List<TrainingRecordEntity>
 
-    @Query("SELECT t FROM TrainingRecordEntity t JOIN FETCH t.exercise e JOIN FETCH e.bodyPart WHERE t.trainingDate BETWEEN :startDate AND :endDate ORDER BY t.trainingDate DESC, t.createdAt DESC")
-    fun findByTrainingDateBetweenWithExercise(startDate: LocalDate, endDate: LocalDate): List<TrainingRecordEntity>
+    @Query("SELECT t FROM TrainingRecordEntity t JOIN FETCH t.exercise e JOIN FETCH e.bodyPart WHERE t.userId = :userId AND t.trainingDate BETWEEN :startDate AND :endDate ORDER BY t.trainingDate DESC, t.createdAt DESC")
+    fun findByUserIdAndTrainingDateBetweenWithExercise(userId: Long, startDate: LocalDate, endDate: LocalDate): List<TrainingRecordEntity>
+
+    fun deleteByIdAndUserId(id: Long, userId: Long)
 }

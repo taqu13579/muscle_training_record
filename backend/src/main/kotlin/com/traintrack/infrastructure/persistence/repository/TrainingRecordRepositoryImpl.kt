@@ -3,6 +3,7 @@ package com.traintrack.infrastructure.persistence.repository
 import com.traintrack.domain.model.training.TrainingDate
 import com.traintrack.domain.model.training.TrainingRecord
 import com.traintrack.domain.model.training.TrainingRecordId
+import com.traintrack.domain.model.user.UserId
 import com.traintrack.domain.repository.TrainingRecordRepository
 import com.traintrack.infrastructure.persistence.entity.TrainingRecordEntity
 import com.traintrack.infrastructure.persistence.mapper.TrainingRecordMapper
@@ -21,20 +22,20 @@ class TrainingRecordRepositoryImpl(
     private val mapper: TrainingRecordMapper
 ) : TrainingRecordRepository {
 
-    override fun findAll(pageable: Pageable): Page<TrainingRecord> {
-        return jpaRepository.findAllWithExercise(pageable).map { mapper.toDomain(it) }
+    override fun findAllByUserId(userId: UserId, pageable: Pageable): Page<TrainingRecord> {
+        return jpaRepository.findAllByUserIdWithExercise(userId.value, pageable).map { mapper.toDomain(it) }
     }
 
-    override fun findById(id: TrainingRecordId): TrainingRecord? {
-        return jpaRepository.findByIdWithExercise(id.value)?.let { mapper.toDomain(it) }
+    override fun findByIdAndUserId(id: TrainingRecordId, userId: UserId): TrainingRecord? {
+        return jpaRepository.findByIdAndUserIdWithExercise(id.value, userId.value)?.let { mapper.toDomain(it) }
     }
 
-    override fun findByTrainingDate(date: TrainingDate): List<TrainingRecord> {
-        return mapper.toDomainList(jpaRepository.findByTrainingDateWithExercise(date.value))
+    override fun findByUserIdAndTrainingDate(userId: UserId, date: TrainingDate): List<TrainingRecord> {
+        return mapper.toDomainList(jpaRepository.findByUserIdAndTrainingDateWithExercise(userId.value, date.value))
     }
 
-    override fun findByTrainingDateBetween(startDate: LocalDate, endDate: LocalDate): List<TrainingRecord> {
-        return mapper.toDomainList(jpaRepository.findByTrainingDateBetweenWithExercise(startDate, endDate))
+    override fun findByUserIdAndTrainingDateBetween(userId: UserId, startDate: LocalDate, endDate: LocalDate): List<TrainingRecord> {
+        return mapper.toDomainList(jpaRepository.findByUserIdAndTrainingDateBetweenWithExercise(userId.value, startDate, endDate))
     }
 
     @Transactional
@@ -42,9 +43,10 @@ class TrainingRecordRepositoryImpl(
         val exerciseEntity = jpaExerciseRepository.findByIdWithBodyPart(record.exerciseId.value)
             ?: throw IllegalArgumentException("Exercise not found: ${record.exerciseId.value}")
 
-        val entity = if (record.id.value == 1L && jpaRepository.findById(1L).isEmpty) {
+        val entity = if (record.id.value == 0L) {
             // New record
             TrainingRecordEntity(
+                userId = record.userId.value,
                 exercise = exerciseEntity,
                 weightKg = record.weight.value,
                 repCount = record.repCount.value,
@@ -54,8 +56,8 @@ class TrainingRecordRepositoryImpl(
             )
         } else {
             // Update existing
-            val existing = jpaRepository.findById(record.id.value)
-                .orElseThrow { IllegalArgumentException("TrainingRecord not found: ${record.id.value}") }
+            val existing = jpaRepository.findByIdAndUserIdWithExercise(record.id.value, record.userId.value)
+                ?: throw IllegalArgumentException("TrainingRecord not found: ${record.id.value}")
             existing.weightKg = record.weight.value
             existing.repCount = record.repCount.value
             existing.setCount = record.setCount.value
@@ -69,7 +71,7 @@ class TrainingRecordRepositoryImpl(
     }
 
     @Transactional
-    override fun deleteById(id: TrainingRecordId) {
-        jpaRepository.deleteById(id.value)
+    override fun deleteByIdAndUserId(id: TrainingRecordId, userId: UserId) {
+        jpaRepository.deleteByIdAndUserId(id.value, userId.value)
     }
 }
