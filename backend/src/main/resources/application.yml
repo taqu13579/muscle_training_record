@@ -30,6 +30,10 @@ logging:
     com.traintrack: DEBUG
     org.hibernate.SQL: DEBUG
 
+jwt:
+  secret: ${JWT_SECRET:your-256-bit-secret-key-here-minimum-32-characters}
+  expiration-ms: 1800000
+
 ---
 spring:
   config:

@@ -1,5 +1,6 @@
 package com.traintrack.presentation.exception
 
+import com.traintrack.domain.exception.AuthenticationException
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -41,6 +42,20 @@ class GlobalExceptionHandler {
             path = request.requestURI
         )
         return ResponseEntity.badRequest().body(apiError)
+    }
+
+    @ExceptionHandler(AuthenticationException::class)
+    fun handleAuthenticationException(
+        ex: AuthenticationException,
+        request: HttpServletRequest
+    ): ResponseEntity<ApiError> {
+        val apiError = ApiError(
+            status = HttpStatus.UNAUTHORIZED.value(),
+            error = "Unauthorized",
+            message = ex.message ?: "認証に失敗しました",
+            path = request.requestURI
+        )
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError)
     }
 
     @ExceptionHandler(Exception::class)
