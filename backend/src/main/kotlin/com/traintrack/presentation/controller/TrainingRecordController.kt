@@ -6,6 +6,7 @@ import com.traintrack.presentation.request.UpdateTrainingRecordRequest
 import com.traintrack.presentation.response.CalendarDayResponse
 import com.traintrack.presentation.response.CalendarResponse
 import com.traintrack.presentation.response.TrainingRecordResponse
+import com.traintrack.presentation.security.CurrentUser
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -26,20 +27,23 @@ class TrainingRecordController(
     private val getTrainingRecordsByDateUseCase: GetTrainingRecordsByDateUseCase,
     private val registerTrainingRecordUseCase: RegisterTrainingRecordUseCase,
     private val updateTrainingRecordUseCase: UpdateTrainingRecordUseCase,
-    private val deleteTrainingRecordUseCase: DeleteTrainingRecordUseCase
+    private val deleteTrainingRecordUseCase: DeleteTrainingRecordUseCase,
+    private val currentUser: CurrentUser
 ) {
     @GetMapping
     fun getAll(
         @PageableDefault(size = 20, sort = ["trainingDate"], direction = Sort.Direction.DESC)
         pageable: Pageable
     ): ResponseEntity<Page<TrainingRecordResponse>> {
-        val records = getTrainingRecordsUseCase.execute(pageable)
+        val userId = currentUser.getId()
+        val records = getTrainingRecordsUseCase.execute(userId, pageable)
         return ResponseEntity.ok(records.map { TrainingRecordResponse.from(it) })
     }
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): ResponseEntity<TrainingRecordResponse> {
-        val record = getTrainingRecordByIdUseCase.execute(id)
+        val userId = currentUser.getId()
+        val record = getTrainingRecordByIdUseCase.execute(userId, id)
             ?: return ResponseEntity.notFound().build()
         return ResponseEntity.ok(TrainingRecordResponse.from(record))
     }
@@ -48,7 +52,8 @@ class TrainingRecordController(
     fun getByDate(
         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) date: LocalDate
     ): ResponseEntity<List<TrainingRecordResponse>> {
-        val records = getTrainingRecordsByDateUseCase.execute(date)
+        val userId = currentUser.getId()
+        val records = getTrainingRecordsByDateUseCase.execute(userId, date)
         return ResponseEntity.ok(records.map { TrainingRecordResponse.from(it) })
     }
 
@@ -56,8 +61,9 @@ class TrainingRecordController(
     fun getCalendar(
         @RequestParam yearMonth: String
     ): ResponseEntity<CalendarResponse> {
+        val userId = currentUser.getId()
         val ym = YearMonth.parse(yearMonth)
-        val records = getTrainingRecordsByDateUseCase.executeByMonth(ym)
+        val records = getTrainingRecordsByDateUseCase.executeByMonth(userId, ym)
 
         val dayGroups = records.groupBy { it.trainingDate }
         val days = dayGroups.map { (date, dayRecords) ->
@@ -81,7 +87,9 @@ class TrainingRecordController(
     fun create(
         @Valid @RequestBody request: CreateTrainingRecordRequest
     ): ResponseEntity<TrainingRecordResponse> {
+        val userId = currentUser.getId()
         val command = RegisterTrainingRecordCommand(
+            userId = userId,
             exerciseId = request.exerciseId,
             weightKg = request.weightKg,
             repCount = request.repCount,
@@ -98,7 +106,9 @@ class TrainingRecordController(
         @PathVariable id: Long,
         @Valid @RequestBody request: UpdateTrainingRecordRequest
     ): ResponseEntity<TrainingRecordResponse> {
+        val userId = currentUser.getId()
         val command = UpdateTrainingRecordCommand(
+            userId = userId,
             id = id,
             exerciseId = request.exerciseId,
             weightKg = request.weightKg,
@@ -113,7 +123,8 @@ class TrainingRecordController(
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long): ResponseEntity<Unit> {
-        deleteTrainingRecordUseCase.execute(id)
+        val userId = currentUser.getId()
+        deleteTrainingRecordUseCase.execute(userId, id)
         return ResponseEntity.noContent().build()
     }
 }

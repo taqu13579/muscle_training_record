@@ -12,6 +12,9 @@ class TrainingRecordEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
+    @Column(name = "user_id", nullable = false)
+    val userId: Long,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_id", nullable = false)
     val exercise: ExerciseEntity,

@@ -10,6 +10,7 @@ class TrainingRecordMapper(
 ) {
     fun toDomain(entity: TrainingRecordEntity): TrainingRecord = TrainingRecord.create(
         id = entity.id,
+        userId = entity.userId,
         exerciseId = entity.exercise.id,
         exercise = exerciseMapper.toDomain(entity.exercise),
         weightKg = entity.weightKg,

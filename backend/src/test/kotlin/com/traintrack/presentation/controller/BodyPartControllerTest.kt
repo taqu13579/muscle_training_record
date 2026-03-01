@@ -2,6 +2,8 @@ package com.traintrack.presentation.controller
 
 import com.traintrack.application.dto.BodyPartDto
 import com.traintrack.application.usecase.bodypart.GetBodyPartsUseCase
+import com.traintrack.infrastructure.security.JwtConfig
+import com.traintrack.infrastructure.security.JwtProvider
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Test
@@ -23,6 +25,12 @@ class BodyPartControllerTest {
     class Config {
         @Bean
         fun getBodyPartsUseCase(): GetBodyPartsUseCase = mockk()
+
+        @Bean
+        fun jwtConfig(): JwtConfig = JwtConfig(secret = "test-secret-key-minimum-32-characters", expirationMs = 1800000)
+
+        @Bean
+        fun jwtProvider(jwtConfig: JwtConfig): JwtProvider = JwtProvider(jwtConfig)
     }
 
     @Autowired

@@ -2,12 +2,14 @@ package com.traintrack.domain.model.training
 
 import com.traintrack.domain.model.exercise.Exercise
 import com.traintrack.domain.model.exercise.ExerciseId
+import com.traintrack.domain.model.user.UserId
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class TrainingRecord(
     val id: TrainingRecordId,
+    val userId: UserId,
     val exerciseId: ExerciseId,
     val exercise: Exercise? = null,
     val weight: Weight,
@@ -24,6 +26,7 @@ data class TrainingRecord(
     companion object {
         fun create(
             id: Long,
+            userId: Long,
             exerciseId: Long,
             exercise: Exercise? = null,
             weightKg: BigDecimal,
@@ -35,6 +38,7 @@ data class TrainingRecord(
             updatedAt: LocalDateTime? = null
         ): TrainingRecord = TrainingRecord(
             id = TrainingRecordId(id),
+            userId = UserId(userId),
             exerciseId = ExerciseId(exerciseId),
             exercise = exercise,
             weight = Weight(weightKg),
@@ -47,6 +51,7 @@ data class TrainingRecord(
         )
 
         fun createNew(
+            userId: Long,
             exerciseId: Long,
             weightKg: BigDecimal,
             repCount: Int,
@@ -54,7 +59,8 @@ data class TrainingRecord(
             trainingDate: LocalDate,
             memo: String? = null
         ): TrainingRecord = TrainingRecord(
-            id = TrainingRecordId(1), // Placeholder, will be assigned by DB
+            id = TrainingRecordId(0),
+            userId = UserId(userId),
             exerciseId = ExerciseId(exerciseId),
             weight = Weight(weightKg),
             repCount = RepCount(repCount),

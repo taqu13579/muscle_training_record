@@ -1,6 +1,7 @@
 package com.traintrack.application.usecase.training
 
 import com.traintrack.application.dto.TrainingRecordDto
+import com.traintrack.domain.model.user.UserId
 import com.traintrack.domain.repository.TrainingRecordRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -12,7 +13,7 @@ class GetTrainingRecordsUseCase(
     private val trainingRecordRepository: TrainingRecordRepository
 ) {
     @Transactional(readOnly = true)
-    fun execute(pageable: Pageable): Page<TrainingRecordDto> {
-        return trainingRecordRepository.findAll(pageable).map { TrainingRecordDto.from(it) }
+    fun execute(userId: Long, pageable: Pageable): Page<TrainingRecordDto> {
+        return trainingRecordRepository.findAllByUserId(UserId(userId), pageable).map { TrainingRecordDto.from(it) }
     }
 }

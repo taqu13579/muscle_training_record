@@ -9,6 +9,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 data class RegisterTrainingRecordCommand(
+    val userId: Long,
     val exerciseId: Long,
     val weightKg: BigDecimal,
     val repCount: Int,
@@ -24,6 +25,7 @@ class RegisterTrainingRecordUseCase(
     @Transactional
     fun execute(command: RegisterTrainingRecordCommand): TrainingRecordDto {
         val record = TrainingRecord.createNew(
+            userId = command.userId,
             exerciseId = command.exerciseId,
             weightKg = command.weightKg,
             repCount = command.repCount,

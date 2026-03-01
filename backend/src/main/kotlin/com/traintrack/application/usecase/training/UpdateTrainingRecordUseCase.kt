@@ -3,6 +3,7 @@ package com.traintrack.application.usecase.training
 import com.traintrack.application.dto.TrainingRecordDto
 import com.traintrack.domain.model.training.TrainingRecord
 import com.traintrack.domain.model.training.TrainingRecordId
+import com.traintrack.domain.model.user.UserId
 import com.traintrack.domain.repository.TrainingRecordRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -10,6 +11,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 data class UpdateTrainingRecordCommand(
+    val userId: Long,
     val id: Long,
     val exerciseId: Long,
     val weightKg: BigDecimal,
@@ -25,11 +27,12 @@ class UpdateTrainingRecordUseCase(
 ) {
     @Transactional
     fun execute(command: UpdateTrainingRecordCommand): TrainingRecordDto {
-        val existing = trainingRecordRepository.findById(TrainingRecordId(command.id))
+        val existing = trainingRecordRepository.findByIdAndUserId(TrainingRecordId(command.id), UserId(command.userId))
             ?: throw IllegalArgumentException("TrainingRecord not found: ${command.id}")
 
         val updated = TrainingRecord.create(
             id = command.id,
+            userId = command.userId,
             exerciseId = command.exerciseId,
             exercise = existing.exercise,
             weightKg = command.weightKg,
