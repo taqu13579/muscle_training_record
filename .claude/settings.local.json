@@ -25,7 +25,8 @@
       "Bash(xargs:*)",
       "Bash(grep:*)",
       "Bash(pgrep:*)",
-      "Bash(brew services:*)"
+      "Bash(brew services:*)",
+      "Bash(wc:*)"
     ]
   }
 }

@@ -32,34 +32,36 @@ export function Header() {
           <Link to="/" className="text-xl font-bold text-gray-800">
             TrainTrack
           </Link>
-          <div className="flex items-center gap-4">
-            <nav className="flex gap-2">
-              <Link to="/" className={linkClass('/')}>
-                ホーム
-              </Link>
-              <Link to="/exercises" className={linkClass('/exercises')}>
-                種目
-              </Link>
-            </nav>
-            {isAuthenticated ? (
-              <div className="flex items-center gap-3">
-                <span className="text-gray-600 text-sm">{user?.username}</span>
-                <button
-                  onClick={handleLogout}
-                  className="text-gray-600 hover:text-red-600 text-sm transition-colors"
+          {location.pathname !== '/login' && (
+            <div className="flex items-center gap-4">
+              <nav className="flex gap-2">
+                <Link to="/" className={linkClass('/')}>
+                  ホーム
+                </Link>
+                <Link to="/exercises" className={linkClass('/exercises')}>
+                  種目
+                </Link>
+              </nav>
+              {isAuthenticated ? (
+                <div className="flex items-center gap-3">
+                  <span className="text-gray-600 text-sm">{user?.username}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="text-gray-600 hover:text-red-600 text-sm transition-colors"
+                  >
+                    ログアウト
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="text-blue-600 hover:underline text-sm"
                 >
-                  ログアウト
-                </button>
-              </div>
-            ) : (
-              <Link
-                to="/login"
-                className="text-blue-600 hover:underline text-sm"
-              >
-                ログイン
-              </Link>
-            )}
-          </div>
+                  ログイン
+                </Link>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </header>
