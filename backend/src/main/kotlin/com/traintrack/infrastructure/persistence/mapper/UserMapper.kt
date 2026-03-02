@@ -1,6 +1,7 @@
 package com.traintrack.infrastructure.persistence.mapper
 
 import com.traintrack.domain.model.user.User
+import com.traintrack.domain.model.user.UserRole
 import com.traintrack.infrastructure.persistence.entity.UserEntity
 import org.springframework.stereotype.Component
 
@@ -11,6 +12,7 @@ class UserMapper {
         email = entity.email,
         username = entity.username,
         hashedPassword = entity.passwordHash,
+        role = UserRole.valueOf(entity.role),
         createdAt = entity.createdAt,
         updatedAt = entity.updatedAt
     )

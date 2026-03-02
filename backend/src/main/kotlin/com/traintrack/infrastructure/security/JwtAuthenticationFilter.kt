@@ -13,6 +13,7 @@ class JwtAuthenticationFilter(
 
     companion object {
         const val USER_ID_ATTRIBUTE = "userId"
+        const val USER_ROLE_ATTRIBUTE = "userRole"
     }
 
     override fun doFilterInternal(
@@ -24,7 +25,9 @@ class JwtAuthenticationFilter(
 
         if (token != null && jwtProvider.validateToken(token)) {
             val userId = jwtProvider.getUserIdFromToken(token)
+            val role = jwtProvider.getRoleFromToken(token)
             request.setAttribute(USER_ID_ATTRIBUTE, userId)
+            request.setAttribute(USER_ROLE_ATTRIBUTE, role)
         }
 
         filterChain.doFilter(request, response)

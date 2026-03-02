@@ -37,13 +37,18 @@ class UserRepositoryImpl(
         return jpaRepository.existsByUsername(username.value)
     }
 
+    override fun findAll(): List<User> {
+        return mapper.toDomainList(jpaRepository.findAll())
+    }
+
     @Transactional
     override fun save(user: User): User {
         val entity = if (user.id.isNew()) {
             UserEntity(
                 email = user.email.value,
                 username = user.username.value,
-                passwordHash = user.hashedPassword.value
+                passwordHash = user.hashedPassword.value,
+                role = user.role.name
             )
         } else {
             val existing = jpaRepository.findById(user.id.value)
@@ -53,6 +58,7 @@ class UserRepositoryImpl(
                 email = user.email.value,
                 username = user.username.value,
                 passwordHash = user.hashedPassword.value,
+                role = user.role.name,
                 createdAt = existing.createdAt
             )
         }

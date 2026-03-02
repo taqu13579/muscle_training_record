@@ -7,6 +7,7 @@ data class UserDto(
     val id: Long,
     val email: String,
     val username: String,
+    val role: String,
     val createdAt: LocalDateTime?
 ) {
     companion object {
@@ -14,6 +15,7 @@ data class UserDto(
             id = domain.id.value,
             email = domain.email.value,
             username = domain.username.value,
+            role = domain.role.name,
             createdAt = domain.createdAt
         )
     }

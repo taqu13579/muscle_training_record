@@ -6,6 +6,7 @@ interface AuthContextType extends AuthState {
   login: (user: User, token: string) => void;
   logout: () => void;
   getToken: () => string | null;
+  isAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -61,8 +62,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const getToken = () => localStorage.getItem('accessToken');
 
+  const isAdmin = authState.user?.role === 'ADMIN';
+
   return (
-    <AuthContext.Provider value={{ ...authState, login, logout, getToken }}>
+    <AuthContext.Provider value={{ ...authState, login, logout, getToken, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

@@ -36,7 +36,7 @@ class LoginUserUseCase(
             throw AuthenticationException.InvalidCredentials()
         }
 
-        val accessToken = jwtProvider.generateToken(user.id.value, user.email.value)
+        val accessToken = jwtProvider.generateToken(user.id.value, user.email.value, user.role.name)
 
         return LoginResult(
             user = UserDto.from(user),

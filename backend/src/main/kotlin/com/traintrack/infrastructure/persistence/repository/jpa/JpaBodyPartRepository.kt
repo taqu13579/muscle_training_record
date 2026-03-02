@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface JpaBodyPartRepository : JpaRepository<BodyPartEntity, Long> {
     fun findAllByOrderByDisplayOrderAsc(): List<BodyPartEntity>
+    fun existsByName(name: String): Boolean
 }

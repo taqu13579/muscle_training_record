@@ -19,6 +19,9 @@ class UserEntity(
     @Column(name = "password_hash", nullable = false, length = 255)
     val passwordHash: String,
 
+    @Column(nullable = false, length = 20)
+    val role: String = "USER",
+
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { bodyPartApi } from '../api/bodyPartApi';
 import type { BodyPart } from '../types';
 
@@ -7,20 +7,21 @@ export function useBodyParts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    const fetchBodyParts = async () => {
-      try {
-        setLoading(true);
-        const response = await bodyPartApi.getAll();
-        setBodyParts(response.data);
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBodyParts();
+  const fetchBodyParts = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await bodyPartApi.getAll();
+      setBodyParts(response.data);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  return { bodyParts, loading, error };
+  useEffect(() => {
+    fetchBodyParts();
+  }, [fetchBodyParts]);
+
+  return { bodyParts, loading, error, refetch: fetchBodyParts };
 }

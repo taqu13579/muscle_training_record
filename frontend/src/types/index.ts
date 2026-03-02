@@ -1,8 +1,11 @@
 // ユーザー
+export type UserRole = 'USER' | 'ADMIN';
+
 export interface User {
   id: number;
   email: string;
   username: string;
+  role: UserRole;
   createdAt: string | null;
 }
 

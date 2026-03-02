@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, isAdmin } = useAuth();
 
   const handleLogout = () => {
     logout();
@@ -41,6 +41,11 @@ export function Header() {
                 <Link to="/exercises" className={linkClass('/exercises')}>
                   種目
                 </Link>
+                {isAdmin && (
+                  <Link to="/admin" className={linkClass('/admin')}>
+                    管理
+                  </Link>
+                )}
               </nav>
               {isAuthenticated ? (
                 <div className="flex items-center gap-3">
