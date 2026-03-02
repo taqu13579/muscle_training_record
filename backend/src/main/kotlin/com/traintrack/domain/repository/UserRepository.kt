@@ -11,5 +11,6 @@ interface UserRepository {
     fun findByUsername(username: Username): User?
     fun existsByEmail(email: Email): Boolean
     fun existsByUsername(username: Username): Boolean
+    fun findAll(): List<User>
     fun save(user: User): User
 }

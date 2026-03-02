@@ -8,7 +8,7 @@ import java.util.Date
 @Component
 class JwtProvider(private val jwtConfig: JwtConfig) {
 
-    fun generateToken(userId: Long, email: String): String {
+    fun generateToken(userId: Long, email: String, role: String): String {
         val now = Date()
         val expiry = Date(now.time + jwtConfig.expirationMs)
         val key = Keys.hmacShaKeyFor(jwtConfig.secret.toByteArray())
@@ -16,6 +16,7 @@ class JwtProvider(private val jwtConfig: JwtConfig) {
         return Jwts.builder()
             .subject(userId.toString())
             .claim("email", email)
+            .claim("role", role)
             .issuedAt(now)
             .expiration(expiry)
             .signWith(key)
@@ -37,5 +38,12 @@ class JwtProvider(private val jwtConfig: JwtConfig) {
         val claims = Jwts.parser().verifyWith(key).build()
             .parseSignedClaims(token).payload
         return claims.subject.toLong()
+    }
+
+    fun getRoleFromToken(token: String): String {
+        val key = Keys.hmacShaKeyFor(jwtConfig.secret.toByteArray())
+        val claims = Jwts.parser().verifyWith(key).build()
+            .parseSignedClaims(token).payload
+        return claims.get("role", String::class.java) ?: "USER"
     }
 }

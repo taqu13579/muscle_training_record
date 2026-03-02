@@ -4,6 +4,7 @@ import com.traintrack.application.usecase.exercise.*
 import com.traintrack.presentation.request.CreateExerciseRequest
 import com.traintrack.presentation.request.UpdateExerciseRequest
 import com.traintrack.presentation.response.ExerciseResponse
+import com.traintrack.presentation.security.CurrentUser
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,7 +16,8 @@ class ExerciseController(
     private val getExercisesUseCase: GetExercisesUseCase,
     private val registerExerciseUseCase: RegisterExerciseUseCase,
     private val updateExerciseUseCase: UpdateExerciseUseCase,
-    private val deleteExerciseUseCase: DeleteExerciseUseCase
+    private val deleteExerciseUseCase: DeleteExerciseUseCase,
+    private val currentUser: CurrentUser
 ) {
     @GetMapping
     fun getAll(
@@ -33,6 +35,7 @@ class ExerciseController(
     fun create(
         @Valid @RequestBody request: CreateExerciseRequest
     ): ResponseEntity<ExerciseResponse> {
+        currentUser.requireAdmin()
         val command = RegisterExerciseCommand(
             name = request.name,
             bodyPartId = request.bodyPartId
@@ -46,6 +49,7 @@ class ExerciseController(
         @PathVariable id: Long,
         @Valid @RequestBody request: UpdateExerciseRequest
     ): ResponseEntity<ExerciseResponse> {
+        currentUser.requireAdmin()
         val command = UpdateExerciseCommand(
             id = id,
             name = request.name
@@ -56,6 +60,7 @@ class ExerciseController(
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Long): ResponseEntity<Unit> {
+        currentUser.requireAdmin()
         deleteExerciseUseCase.execute(id)
         return ResponseEntity.noContent().build()
     }

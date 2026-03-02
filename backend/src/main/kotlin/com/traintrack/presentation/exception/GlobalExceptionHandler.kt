@@ -1,6 +1,7 @@
 package com.traintrack.presentation.exception
 
 import com.traintrack.domain.exception.AuthenticationException
+import com.traintrack.domain.exception.ForbiddenException
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -56,6 +57,20 @@ class GlobalExceptionHandler {
             path = request.requestURI
         )
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError)
+    }
+
+    @ExceptionHandler(ForbiddenException::class)
+    fun handleForbiddenException(
+        ex: ForbiddenException,
+        request: HttpServletRequest
+    ): ResponseEntity<ApiError> {
+        val apiError = ApiError(
+            status = HttpStatus.FORBIDDEN.value(),
+            error = "Forbidden",
+            message = ex.message ?: "この操作を行う権限がありません",
+            path = request.requestURI
+        )
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError)
     }
 
     @ExceptionHandler(Exception::class)

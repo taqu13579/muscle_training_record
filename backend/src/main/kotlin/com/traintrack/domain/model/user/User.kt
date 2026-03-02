@@ -7,6 +7,7 @@ data class User(
     val email: Email,
     val username: Username,
     val hashedPassword: HashedPassword,
+    val role: UserRole = UserRole.USER,
     val createdAt: LocalDateTime? = null,
     val updatedAt: LocalDateTime? = null
 ) {
@@ -16,6 +17,7 @@ data class User(
             email: String,
             username: String,
             hashedPassword: String,
+            role: UserRole = UserRole.USER,
             createdAt: LocalDateTime? = null,
             updatedAt: LocalDateTime? = null
         ): User = User(
@@ -23,6 +25,7 @@ data class User(
             email = Email(email),
             username = Username(username),
             hashedPassword = HashedPassword(hashedPassword),
+            role = role,
             createdAt = createdAt,
             updatedAt = updatedAt
         )
@@ -35,7 +38,8 @@ data class User(
             id = UserId(0),
             email = Email(email),
             username = Username(username),
-            hashedPassword = HashedPassword(hashedPassword)
+            hashedPassword = HashedPassword(hashedPassword),
+            role = UserRole.USER
         )
     }
 }

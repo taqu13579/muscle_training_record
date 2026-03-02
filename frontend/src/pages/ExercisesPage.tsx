@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useExercises } from '../hooks/useExercises';
 import { useBodyParts } from '../hooks/useBodyParts';
+import { useAuth } from '../contexts/AuthContext';
 import type { Exercise } from '../types';
 
 export function ExercisesPage() {
   const { exercises, loading, createExercise, updateExercise, deleteExercise } = useExercises();
   const { bodyParts } = useBodyParts();
+  const { isAdmin } = useAuth();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editName, setEditName] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
@@ -67,15 +69,17 @@ export function ExercisesPage() {
     <div className="bg-white rounded-lg shadow p-4">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-semibold">種目管理</h1>
-        <button
-          onClick={() => setShowAddForm(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          + 種目を追加
-        </button>
+        {isAdmin && (
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            + 種目を追加
+          </button>
+        )}
       </div>
 
-      {showAddForm && (
+      {isAdmin && showAddForm && (
         <div className="mb-6 p-4 bg-gray-50 rounded-lg">
           <h3 className="font-medium mb-3">新しい種目を追加</h3>
           <div className="space-y-3">
@@ -144,7 +148,7 @@ export function ExercisesPage() {
                   key={exercise.id}
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                 >
-                  {editingId === exercise.id ? (
+                  {isAdmin && editingId === exercise.id ? (
                     <div className="flex items-center gap-2 flex-1">
                       <input
                         type="text"
@@ -171,20 +175,22 @@ export function ExercisesPage() {
                       <span className={exercise.isActive ? '' : 'text-gray-400'}>
                         {exercise.name}
                       </span>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleEdit(exercise)}
-                          className="text-blue-600 hover:text-blue-800 text-sm"
-                        >
-                          編集
-                        </button>
-                        <button
-                          onClick={() => handleDelete(exercise.id)}
-                          className="text-red-600 hover:text-red-800 text-sm"
-                        >
-                          削除
-                        </button>
-                      </div>
+                      {isAdmin && (
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleEdit(exercise)}
+                            className="text-blue-600 hover:text-blue-800 text-sm"
+                          >
+                            編集
+                          </button>
+                          <button
+                            onClick={() => handleDelete(exercise.id)}
+                            className="text-red-600 hover:text-red-800 text-sm"
+                          >
+                            削除
+                          </button>
+                        </div>
+                      )}
                     </>
                   )}
                 </li>

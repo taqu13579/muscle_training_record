@@ -1,6 +1,7 @@
 package com.traintrack.presentation.security
 
 import com.traintrack.domain.exception.AuthenticationException
+import com.traintrack.domain.exception.ForbiddenException
 import com.traintrack.infrastructure.security.JwtAuthenticationFilter
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.stereotype.Component
@@ -20,6 +21,17 @@ class CurrentUser {
     fun getIdOrNull(): Long? {
         val request = getCurrentRequest()
         return request.getAttribute(JwtAuthenticationFilter.USER_ID_ATTRIBUTE) as? Long
+    }
+
+    fun getRole(): String {
+        val request = getCurrentRequest()
+        return request.getAttribute(JwtAuthenticationFilter.USER_ROLE_ATTRIBUTE) as? String ?: "USER"
+    }
+
+    fun isAdmin(): Boolean = getRole() == "ADMIN"
+
+    fun requireAdmin() {
+        if (!isAdmin()) throw ForbiddenException()
     }
 
     private fun getCurrentRequest(): HttpServletRequest {

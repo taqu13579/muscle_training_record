@@ -7,6 +7,7 @@ data class UserResponse(
     val id: Long,
     val email: String,
     val username: String,
+    val role: String,
     val createdAt: LocalDateTime?
 ) {
     companion object {
@@ -14,6 +15,7 @@ data class UserResponse(
             id = dto.id,
             email = dto.email,
             username = dto.username,
+            role = dto.role,
             createdAt = dto.createdAt
         )
     }
