@@ -38,9 +38,11 @@ export function Header() {
                 <Link to="/" className={linkClass('/')}>
                   ホーム
                 </Link>
-                <Link to="/exercises" className={linkClass('/exercises')}>
-                  種目
-                </Link>
+                {isAdmin && (
+                  <Link to="/exercises" className={linkClass('/exercises')}>
+                    種目
+                  </Link>
+                )}
                 {isAdmin && (
                   <Link to="/admin" className={linkClass('/admin')}>
                     管理
