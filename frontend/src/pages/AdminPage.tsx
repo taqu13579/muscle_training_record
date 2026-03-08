@@ -14,6 +14,12 @@ export function AdminPage() {
   const [usersLoading, setUsersLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'users' | 'bodyparts'>('users');
 
+  // 管理者ユーザー作成フォームの状態
+  const [showAddAdminForm, setShowAddAdminForm] = useState(false);
+  const [newAdmin, setNewAdmin] = useState({ email: '', username: '', password: '' });
+  const [addAdminError, setAddAdminError] = useState<string | null>(null);
+  const [addAdminLoading, setAddAdminLoading] = useState(false);
+
   // 部位管理のフォーム状態
   const [showAddBodyPartForm, setShowAddBodyPartForm] = useState(false);
   const [newBodyPart, setNewBodyPart] = useState({ name: '', displayOrder: 1 });
@@ -37,6 +43,25 @@ export function AdminPage() {
       // エラー時はそのまま
     } finally {
       setUsersLoading(false);
+    }
+  };
+
+  const handleAddAdminUser = async () => {
+    if (!newAdmin.email.trim() || !newAdmin.username.trim() || !newAdmin.password.trim()) return;
+    setAddAdminError(null);
+    setAddAdminLoading(true);
+    try {
+      const res = await adminApi.createAdminUser(newAdmin.email, newAdmin.username, newAdmin.password);
+      setUsers((prev) => [...prev, res.data]);
+      setNewAdmin({ email: '', username: '', password: '' });
+      setShowAddAdminForm(false);
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        '管理者ユーザーの作成に失敗しました';
+      setAddAdminError(message);
+    } finally {
+      setAddAdminLoading(false);
     }
   };
 
@@ -119,7 +144,72 @@ export function AdminPage() {
 
       {activeTab === 'users' && (
         <div>
-          <h2 className="text-lg font-medium mb-3">ユーザー一覧</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-medium">ユーザー一覧</h2>
+            <button
+              onClick={() => { setShowAddAdminForm(true); setAddAdminError(null); }}
+              className="bg-purple-600 text-white px-3 py-1.5 rounded-lg hover:bg-purple-700 transition-colors text-sm"
+            >
+              + 管理者を追加
+            </button>
+          </div>
+
+          {showAddAdminForm && (
+            <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+              <h3 className="font-medium mb-3 text-purple-800">新規管理者ユーザーを作成</h3>
+              {addAdminError && (
+                <p className="text-red-600 text-sm mb-3">{addAdminError}</p>
+              )}
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
+                  <input
+                    type="email"
+                    value={newAdmin.email}
+                    onChange={(e) => setNewAdmin({ ...newAdmin, email: e.target.value })}
+                    className="w-full border rounded-lg px-3 py-2"
+                    placeholder="admin@example.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">ユーザー名</label>
+                  <input
+                    type="text"
+                    value={newAdmin.username}
+                    onChange={(e) => setNewAdmin({ ...newAdmin, username: e.target.value })}
+                    className="w-full border rounded-lg px-3 py-2"
+                    placeholder="3〜50文字、英数字・アンダースコア・ハイフンのみ"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">パスワード</label>
+                  <input
+                    type="password"
+                    value={newAdmin.password}
+                    onChange={(e) => setNewAdmin({ ...newAdmin, password: e.target.value })}
+                    className="w-full border rounded-lg px-3 py-2"
+                    placeholder="8文字以上、英字と数字を含める"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleAddAdminUser}
+                    disabled={addAdminLoading || !newAdmin.email.trim() || !newAdmin.username.trim() || !newAdmin.password.trim()}
+                    className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  >
+                    {addAdminLoading ? '作成中...' : '作成'}
+                  </button>
+                  <button
+                    onClick={() => { setShowAddAdminForm(false); setNewAdmin({ email: '', username: '', password: '' }); setAddAdminError(null); }}
+                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+                  >
+                    キャンセル
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {usersLoading ? (
             <div className="animate-pulse space-y-3">
               {[1, 2, 3].map((i) => (
