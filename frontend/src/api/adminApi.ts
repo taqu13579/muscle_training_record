@@ -4,6 +4,9 @@ import type { User, BodyPart } from '../types';
 export const adminApi = {
   getUsers: () => apiClient.get<User[]>('/api/v1/admin/users'),
 
+  createAdminUser: (email: string, username: string, password: string) =>
+    apiClient.post<User>('/api/v1/admin/users', { email, username, password }),
+
   updateUserRole: (userId: number, role: string) =>
     apiClient.patch<User>(`/api/v1/admin/users/${userId}/role`, { role }),
 
