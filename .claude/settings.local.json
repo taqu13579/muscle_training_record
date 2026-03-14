@@ -31,7 +31,14 @@
       "Bash(docker compose:*)",
       "Bash(gtimeout:*)",
       "mcp__ide__getDiagnostics",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(npx tsc:*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_click",
+      "Bash(pkill:*)",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_handle_dialog"
     ]
   }
 }

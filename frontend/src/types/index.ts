@@ -95,6 +95,21 @@ export interface Page<T> {
   size: number;
 }
 
+// 体重記録
+export interface BodyWeight {
+  id: number;
+  weightKg: number;
+  recordedDate: string;
+  memo: string | null;
+  createdAt: string | null;
+}
+
+export interface CreateBodyWeightRequest {
+  weightKg: number;
+  recordedDate: string;
+  memo?: string;
+}
+
 // カレンダー
 export interface CalendarDay {
   date: string;
