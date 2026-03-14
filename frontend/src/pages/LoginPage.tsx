@@ -8,9 +8,9 @@ export function LoginPage() {
   const { login, loading, error } = useLogin();
 
   const handleSubmit = async (data: LoginRequest) => {
-    const success = await login(data);
-    if (success) {
-      navigate('/');
+    const user = await login(data);
+    if (user) {
+      navigate(user.role === 'ADMIN' ? '/admin' : '/');
     }
   };
 
