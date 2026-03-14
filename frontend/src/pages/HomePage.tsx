@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useCalendar, useTrainingRecordsByDate } from '../hooks/useTrainingRecords';
 import { Calendar } from '../components/calendar/Calendar';
 import { TrainingRecordList } from '../components/training/TrainingRecordList';
+import { BodyWeightSection } from '../components/bodyweight/BodyWeightSection';
 
 function formatDate(date: Date): string {
   return date.toISOString().split('T')[0];
@@ -61,6 +62,8 @@ export function HomePage() {
           onNextMonth={handleNextMonth}
         />
       </div>
+
+      <BodyWeightSection />
 
       <div className="bg-white rounded-lg shadow p-4">
         <div className="flex items-center justify-between mb-4">

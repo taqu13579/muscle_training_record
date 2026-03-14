@@ -13,7 +13,7 @@
 | DB | MySQL 8.0 (Docker, ホスト側ポート 3307) |
 | 認証 | JWT (30分有効, HS256) + BCrypt |
 | 認可 | ロールベース (USER / ADMIN) |
-| DBマイグレーション | Flyway (V1〜V5) |
+| DBマイグレーション | Flyway (V1〜V6) |
 
 ## 起動方法
 
@@ -62,6 +62,7 @@ frontend/src/
 - **body_parts**: id, name, display_order, created_at, updated_at
 - **exercises**: id, name, body_part_id (FK), is_active, created_at, updated_at
 - **training_records**: id, user_id (FK), exercise_id (FK), weight_kg, rep_count, set_count, training_date, memo, created_at, updated_at
+- **body_weights**: id, user_id, weight_kg, recorded_date, memo, created_at, updated_at (UNIQUE: user_id + recorded_date)
 
 ### Flyway マイグレーション履歴
 
@@ -72,6 +73,7 @@ frontend/src/
 | V3 | users テーブル作成 |
 | V4 | training_records に user_id 追加 |
 | V5 | users に role カラム追加 |
+| V6 | body_weights テーブル作成 |
 
 ## API エンドポイント
 
@@ -86,6 +88,10 @@ frontend/src/
 | `/api/v1/body-parts/**` | POST/PUT/DELETE | 必須 | ADMIN | 部位管理 |
 | `/api/v1/admin/users` | GET/POST | 必須 | ADMIN | ユーザー一覧・作成 |
 | `/api/v1/admin/users/{id}/role` | PATCH | 必須 | ADMIN | ロール変更 |
+| `/api/v1/body-weight` | GET | 必須 | USER以上 | 体重記録一覧 |
+| `/api/v1/body-weight/range` | GET | 必須 | USER以上 | 期間指定体重一覧 |
+| `/api/v1/body-weight` | POST | 必須 | USER以上 | 体重記録追加 |
+| `/api/v1/body-weight/{id}` | DELETE | 必須 | USER以上 | 体重記録削除 |
 
 ## 認証・認可
 
@@ -141,6 +147,8 @@ localStorage に `accessToken`・`user` を保持。
 | `frontend/src/api/adminApi.ts` | 管理者 API クライアント |
 | `frontend/src/pages/AdminPage.tsx` | 管理画面 |
 | `frontend/src/contexts/AuthContext.tsx` | 認証コンテキスト |
+| `frontend/src/api/bodyWeightApi.ts` | 体重記録 API クライアント |
+| `frontend/src/components/bodyweight/BodyWeightSection.tsx` | 体重記録・グラフ表示コンポーネント |
 
 ## 例外処理
 
