@@ -13,13 +13,13 @@ export function useLogin() {
   const [error, setError] = useState<LoginError | null>(null);
   const { login: setAuth } = useAuth();
 
-  const login = async (data: LoginRequest): Promise<boolean> => {
+  const login = async (data: LoginRequest): Promise<import('../types').User | null> => {
     setLoading(true);
     setError(null);
     try {
       const response = await authApi.login(data);
       setAuth(response.data.user, response.data.accessToken);
-      return true;
+      return response.data.user;
     } catch (err: unknown) {
       const axiosError = err as {
         response?: { data?: { message?: string; details?: string[] } };
@@ -28,7 +28,7 @@ export function useLogin() {
         axiosError.response?.data?.message || 'ログインに失敗しました';
       const details = axiosError.response?.data?.details;
       setError({ message, details });
-      return false;
+      return null;
     } finally {
       setLoading(false);
     }

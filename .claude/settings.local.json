@@ -26,7 +26,12 @@
       "Bash(grep:*)",
       "Bash(pgrep:*)",
       "Bash(brew services:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(./gradlew flywayInfo:*)",
+      "Bash(docker compose:*)",
+      "Bash(gtimeout:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(cd:*)"
     ]
   }
 }

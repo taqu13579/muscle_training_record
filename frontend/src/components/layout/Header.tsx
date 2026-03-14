@@ -35,9 +35,11 @@ export function Header() {
           {location.pathname !== '/login' && (
             <div className="flex items-center gap-4">
               <nav className="flex gap-2">
-                <Link to="/" className={linkClass('/')}>
-                  ホーム
-                </Link>
+                {!isAdmin && (
+                  <Link to="/" className={linkClass('/')}>
+                    ホーム
+                  </Link>
+                )}
                 {isAdmin && (
                   <Link to="/exercises" className={linkClass('/exercises')}>
                     種目
