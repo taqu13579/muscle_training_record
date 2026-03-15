@@ -40,6 +40,11 @@ export function Header() {
                     ホーム
                   </Link>
                 )}
+                {isAuthenticated && (
+                  <Link to="/stats" className={linkClass('/stats')}>
+                    統計
+                  </Link>
+                )}
                 {isAdmin && (
                   <Link to="/exercises" className={linkClass('/exercises')}>
                     種目

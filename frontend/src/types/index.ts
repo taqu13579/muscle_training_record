@@ -110,6 +110,12 @@ export interface CreateBodyWeightRequest {
   memo?: string;
 }
 
+// 統計
+export interface DailyVolume {
+  date: string;
+  totalVolume: number;
+}
+
 // カレンダー
 export interface CalendarDay {
   date: string;
