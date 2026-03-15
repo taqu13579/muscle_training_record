@@ -5,6 +5,7 @@ import type {
   UpdateTrainingRecordRequest,
   Page,
   CalendarResponse,
+  DailyVolume,
 } from '../types';
 
 export const trainingRecordApi = {
@@ -31,4 +32,9 @@ export const trainingRecordApi = {
     apiClient.put<TrainingRecord>(`/api/v1/training-records/${id}`, data),
 
   delete: (id: number) => apiClient.delete(`/api/v1/training-records/${id}`),
+
+  getVolumeStats: (days: number, exerciseId?: number, bodyPartId?: number) =>
+    apiClient.get<DailyVolume[]>('/api/v1/training-records/stats/volume', {
+      params: { days, ...(exerciseId !== undefined && { exerciseId }), ...(bodyPartId !== undefined && { bodyPartId }) },
+    }),
 };

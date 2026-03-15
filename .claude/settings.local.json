@@ -38,7 +38,11 @@
       "mcp__playwright__browser_click",
       "Bash(pkill:*)",
       "mcp__playwright__browser_snapshot",
-      "mcp__playwright__browser_handle_dialog"
+      "mcp__playwright__browser_handle_dialog",
+      "Bash(ps:*)",
+      "Bash(kill:*)",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_install"
     ]
   }
 }

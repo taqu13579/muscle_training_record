@@ -5,6 +5,7 @@ import com.traintrack.presentation.request.CreateTrainingRecordRequest
 import com.traintrack.presentation.request.UpdateTrainingRecordRequest
 import com.traintrack.presentation.response.CalendarDayResponse
 import com.traintrack.presentation.response.CalendarResponse
+import com.traintrack.presentation.response.DailyVolumeResponse
 import com.traintrack.presentation.response.TrainingRecordResponse
 import com.traintrack.presentation.security.CurrentUser
 import jakarta.validation.Valid
@@ -28,6 +29,7 @@ class TrainingRecordController(
     private val registerTrainingRecordUseCase: RegisterTrainingRecordUseCase,
     private val updateTrainingRecordUseCase: UpdateTrainingRecordUseCase,
     private val deleteTrainingRecordUseCase: DeleteTrainingRecordUseCase,
+    private val getVolumeStatsUseCase: GetVolumeStatsUseCase,
     private val currentUser: CurrentUser
 ) {
     @GetMapping
@@ -126,5 +128,16 @@ class TrainingRecordController(
         val userId = currentUser.getId()
         deleteTrainingRecordUseCase.execute(userId, id)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/stats/volume")
+    fun getVolumeStats(
+        @RequestParam(defaultValue = "30") days: Int,
+        @RequestParam(required = false) exerciseId: Long?,
+        @RequestParam(required = false) bodyPartId: Long?
+    ): ResponseEntity<List<DailyVolumeResponse>> {
+        val userId = currentUser.getId()
+        val stats = getVolumeStatsUseCase.execute(userId, days, exerciseId, bodyPartId)
+        return ResponseEntity.ok(stats.map { DailyVolumeResponse.from(it) })
     }
 }

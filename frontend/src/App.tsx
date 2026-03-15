@@ -8,6 +8,7 @@ import { ExercisesPage } from './pages/ExercisesPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { LoginPage } from './pages/LoginPage';
 import { AdminPage } from './pages/AdminPage';
+import { StatsPage } from './pages/StatsPage';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
               <Route path="/records/:id/edit" element={<RecordFormPage />} />
               <Route path="/exercises" element={<ExercisesPage />} />
               <Route path="/admin" element={<AdminPage />} />
+              <Route path="/stats" element={<StatsPage />} />
             </Routes>
           </main>
         </div>
