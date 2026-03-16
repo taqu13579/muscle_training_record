@@ -92,6 +92,7 @@ frontend/src/
 | `/api/v1/body-weight/range` | GET | 必須 | USER以上 | 期間指定体重一覧 |
 | `/api/v1/body-weight` | POST | 必須 | USER以上 | 体重記録追加 |
 | `/api/v1/body-weight/{id}` | DELETE | 必須 | USER以上 | 体重記録削除 |
+| `/api/v1/training-records/stats/volume` | GET | 必須 | USER以上 | 日次総負荷量一覧 (days, exerciseId?, bodyPartId?) |
 
 ## 認証・認可
 
@@ -119,6 +120,7 @@ frontend/src/
 | `/records/new` | 記録作成 | 必須 |
 | `/records/:id/edit` | 記録編集 | 必須 |
 | `/admin` | 管理画面 (ADMIN のみ) | 必須 |
+| `/stats` | 総負荷量統計グラフ | 必須 |
 
 ### AuthContext
 
@@ -149,6 +151,9 @@ localStorage に `accessToken`・`user` を保持。
 | `frontend/src/contexts/AuthContext.tsx` | 認証コンテキスト |
 | `frontend/src/api/bodyWeightApi.ts` | 体重記録 API クライアント |
 | `frontend/src/components/bodyweight/BodyWeightSection.tsx` | 体重記録・グラフ表示コンポーネント |
+| `backend/.../application/usecase/training/GetVolumeStatsUseCase.kt` | 日次総負荷量集計ユースケース |
+| `frontend/src/pages/StatsPage.tsx` | 統計ページ (期間・部位・種目フィルタ＋グラフ) |
+| `frontend/src/components/stats/VolumeChart.tsx` | 総負荷量SVG折れ線グラフ |
 
 ## 例外処理
 
