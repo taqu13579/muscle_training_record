@@ -5,6 +5,7 @@ import { HomePage } from './pages/HomePage';
 import { RecordDetailPage } from './pages/RecordDetailPage';
 import { RecordFormPage } from './pages/RecordFormPage';
 import { ExercisesPage } from './pages/ExercisesPage';
+import { ExerciseDetailPage } from './pages/ExerciseDetailPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { LoginPage } from './pages/LoginPage';
 import { AdminPage } from './pages/AdminPage';
@@ -25,6 +26,7 @@ function App() {
               <Route path="/records/new" element={<RecordFormPage />} />
               <Route path="/records/:id/edit" element={<RecordFormPage />} />
               <Route path="/exercises" element={<ExercisesPage />} />
+              <Route path="/exercises/:id" element={<ExerciseDetailPage />} />
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/stats" element={<StatsPage />} />
             </Routes>

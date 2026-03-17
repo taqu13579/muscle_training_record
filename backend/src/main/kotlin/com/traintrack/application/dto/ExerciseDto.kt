@@ -7,7 +7,9 @@ data class ExerciseDto(
     val name: String,
     val bodyPartId: Long,
     val bodyPart: BodyPartDto?,
-    val isActive: Boolean
+    val isActive: Boolean,
+    val description: String? = null,
+    val auxiliaryMuscles: List<BodyPartDto> = emptyList()
 ) {
     companion object {
         fun from(domain: Exercise): ExerciseDto = ExerciseDto(
@@ -15,7 +17,9 @@ data class ExerciseDto(
             name = domain.name.value,
             bodyPartId = domain.bodyPartId.value,
             bodyPart = domain.bodyPart?.let { BodyPartDto.from(it) },
-            isActive = domain.isActive
+            isActive = domain.isActive,
+            description = domain.description,
+            auxiliaryMuscles = domain.auxiliaryMuscles.map { BodyPartDto.from(it) }
         )
     }
 }

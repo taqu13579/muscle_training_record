@@ -8,7 +8,9 @@ data class Exercise(
     val name: ExerciseName,
     val bodyPartId: BodyPartId,
     val bodyPart: BodyPart? = null,
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    val description: String? = null,
+    val auxiliaryMuscles: List<BodyPart> = emptyList()
 ) {
     companion object {
         fun create(
@@ -16,13 +18,17 @@ data class Exercise(
             name: String,
             bodyPartId: Long,
             bodyPart: BodyPart? = null,
-            isActive: Boolean = true
+            isActive: Boolean = true,
+            description: String? = null,
+            auxiliaryMuscles: List<BodyPart> = emptyList()
         ): Exercise = Exercise(
             id = ExerciseId(id),
             name = ExerciseName(name),
             bodyPartId = BodyPartId(bodyPartId),
             bodyPart = bodyPart,
-            isActive = isActive
+            isActive = isActive,
+            description = description,
+            auxiliaryMuscles = auxiliaryMuscles
         )
 
         fun createNew(
@@ -41,4 +47,14 @@ data class Exercise(
     fun activate(): Exercise = copy(isActive = true)
 
     fun updateName(newName: String): Exercise = copy(name = ExerciseName(newName))
+
+    fun updateDetail(
+        newName: String,
+        newDescription: String?,
+        newAuxiliaryMuscles: List<BodyPart>
+    ): Exercise = copy(
+        name = ExerciseName(newName),
+        description = newDescription,
+        auxiliaryMuscles = newAuxiliaryMuscles
+    )
 }

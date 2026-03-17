@@ -44,6 +44,8 @@ export interface Exercise {
   name: string;
   bodyPart: BodyPart | null;
   isActive: boolean;
+  description?: string;
+  auxiliaryMuscles?: BodyPart[];
 }
 
 export interface CreateExerciseRequest {
@@ -53,6 +55,8 @@ export interface CreateExerciseRequest {
 
 export interface UpdateExerciseRequest {
   name: string;
+  description?: string;
+  auxiliaryMuscleBodyPartIds?: number[];
 }
 
 // トレーニング記録
