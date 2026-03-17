@@ -13,7 +13,9 @@ class ExerciseMapper(
         name = entity.name,
         bodyPartId = entity.bodyPart.id,
         bodyPart = bodyPartMapper.toDomain(entity.bodyPart),
-        isActive = entity.isActive
+        isActive = entity.isActive,
+        description = entity.description,
+        auxiliaryMuscles = bodyPartMapper.toDomainList(entity.auxiliaryMuscles)
     )
 
     fun toDomainList(entities: List<ExerciseEntity>): List<Exercise> = entities.map { toDomain(it) }

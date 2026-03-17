@@ -2,17 +2,19 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useBodyParts } from '../hooks/useBodyParts';
+import { useExercises } from '../hooks/useExercises';
 import { adminApi } from '../api/adminApi';
-import type { User } from '../types';
+import type { User, Exercise } from '../types';
 
 export function AdminPage() {
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const { bodyParts, refetch: refetchBodyParts } = useBodyParts();
+  const { exercises, updateExercise } = useExercises();
 
   const [users, setUsers] = useState<User[]>([]);
   const [usersLoading, setUsersLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'users' | 'bodyparts'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'bodyparts' | 'exercises'>('users');
 
   // 管理者ユーザー作成フォームの状態
   const [showAddAdminForm, setShowAddAdminForm] = useState(false);
@@ -25,6 +27,15 @@ export function AdminPage() {
   const [newBodyPart, setNewBodyPart] = useState({ name: '', displayOrder: 1 });
   const [editingBodyPartId, setEditingBodyPartId] = useState<number | null>(null);
   const [editBodyPart, setEditBodyPart] = useState({ name: '', displayOrder: 1 });
+
+  // 種目編集の状態
+  const [editingExerciseId, setEditingExerciseId] = useState<number | null>(null);
+  const [editExercise, setEditExercise] = useState<{
+    name: string;
+    description: string;
+    auxiliaryMuscleBodyPartIds: number[];
+  }>({ name: '', description: '', auxiliaryMuscleBodyPartIds: [] });
+  const [exerciseSaveLoading, setExerciseSaveLoading] = useState(false);
 
   useEffect(() => {
     if (!isAdmin) {
@@ -113,6 +124,41 @@ export function AdminPage() {
     }
   };
 
+  const handleStartEditExercise = (exercise: Exercise) => {
+    setEditingExerciseId(exercise.id);
+    setEditExercise({
+      name: exercise.name,
+      description: exercise.description ?? '',
+      auxiliaryMuscleBodyPartIds: exercise.auxiliaryMuscles?.map((m) => m.id) ?? [],
+    });
+  };
+
+  const handleSaveExercise = async (id: number) => {
+    if (!editExercise.name.trim()) return;
+    setExerciseSaveLoading(true);
+    try {
+      await updateExercise(id, {
+        name: editExercise.name,
+        description: editExercise.description || undefined,
+        auxiliaryMuscleBodyPartIds: editExercise.auxiliaryMuscleBodyPartIds,
+      });
+      setEditingExerciseId(null);
+    } catch {
+      alert('種目の更新に失敗しました');
+    } finally {
+      setExerciseSaveLoading(false);
+    }
+  };
+
+  const toggleAuxiliaryMuscle = (bodyPartId: number) => {
+    setEditExercise((prev) => ({
+      ...prev,
+      auxiliaryMuscleBodyPartIds: prev.auxiliaryMuscleBodyPartIds.includes(bodyPartId)
+        ? prev.auxiliaryMuscleBodyPartIds.filter((id) => id !== bodyPartId)
+        : [...prev.auxiliaryMuscleBodyPartIds, bodyPartId],
+    }));
+  };
+
   if (!isAdmin) return null;
 
   return (
@@ -139,6 +185,16 @@ export function AdminPage() {
           }`}
         >
           部位管理
+        </button>
+        <button
+          onClick={() => setActiveTab('exercises')}
+          className={`px-4 py-2 -mb-px font-medium text-sm transition-colors ${
+            activeTab === 'exercises'
+              ? 'border-b-2 border-blue-600 text-blue-600'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          種目管理
         </button>
       </div>
 
@@ -389,6 +445,105 @@ export function AdminPage() {
                       </button>
                     </div>
                   </>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {activeTab === 'exercises' && (
+        <div>
+          <h2 className="text-lg font-medium mb-3">種目一覧（説明・補助筋の編集）</h2>
+          <ul className="space-y-2">
+            {exercises.map((exercise) => (
+              <li key={exercise.id} className="p-3 bg-gray-50 rounded-lg">
+                {editingExerciseId === exercise.id ? (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">種目名</label>
+                      <input
+                        type="text"
+                        value={editExercise.name}
+                        onChange={(e) => setEditExercise({ ...editExercise, name: e.target.value })}
+                        className="w-full border rounded-lg px-3 py-2"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">説明</label>
+                      <textarea
+                        value={editExercise.description}
+                        onChange={(e) =>
+                          setEditExercise({ ...editExercise, description: e.target.value })
+                        }
+                        rows={3}
+                        className="w-full border rounded-lg px-3 py-2"
+                        placeholder="フォームのポイントや注意点など"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">補助筋</label>
+                      <div className="flex flex-wrap gap-2">
+                        {bodyParts.map((bp) => (
+                          <label key={bp.id} className="flex items-center gap-1 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={editExercise.auxiliaryMuscleBodyPartIds.includes(bp.id)}
+                              onChange={() => toggleAuxiliaryMuscle(bp.id)}
+                              className="rounded"
+                            />
+                            <span className="text-sm">{bp.name}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleSaveExercise(exercise.id)}
+                        disabled={exerciseSaveLoading || !editExercise.name.trim()}
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
+                      >
+                        {exerciseSaveLoading ? '保存中...' : '保存'}
+                      </button>
+                      <button
+                        onClick={() => setEditingExerciseId(null)}
+                        className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors text-sm"
+                      >
+                        キャンセル
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="font-medium">{exercise.name}</span>
+                      {exercise.bodyPart && (
+                        <span className="text-gray-400 text-xs ml-2">{exercise.bodyPart.name}</span>
+                      )}
+                      {exercise.auxiliaryMuscles && exercise.auxiliaryMuscles.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {exercise.auxiliaryMuscles.map((m) => (
+                            <span
+                              key={m.id}
+                              className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-xs"
+                            >
+                              {m.name}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {exercise.description && (
+                        <p className="text-gray-500 text-xs mt-1 line-clamp-1">
+                          {exercise.description}
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => handleStartEditExercise(exercise)}
+                      className="text-blue-600 hover:text-blue-800 text-sm ml-4 flex-shrink-0"
+                    >
+                      編集
+                    </button>
+                  </div>
                 )}
               </li>
             ))}

@@ -20,6 +20,17 @@ class ExerciseEntity(
     @Column(name = "is_active", nullable = false)
     var isActive: Boolean = true,
 
+    @Column(name = "description", columnDefinition = "TEXT")
+    var description: String? = null,
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "exercise_auxiliary_muscles",
+        joinColumns = [JoinColumn(name = "exercise_id")],
+        inverseJoinColumns = [JoinColumn(name = "body_part_id")]
+    )
+    var auxiliaryMuscles: MutableList<BodyPartEntity> = mutableListOf(),
+
     @Column(name = "created_at", nullable = false, updatable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
 

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/v1/exercises")
 class ExerciseController(
     private val getExercisesUseCase: GetExercisesUseCase,
+    private val getExerciseUseCase: GetExerciseUseCase,
     private val registerExerciseUseCase: RegisterExerciseUseCase,
     private val updateExerciseUseCase: UpdateExerciseUseCase,
     private val deleteExerciseUseCase: DeleteExerciseUseCase,
@@ -29,6 +30,12 @@ class ExerciseController(
             getExercisesUseCase.execute()
         }
         return ResponseEntity.ok(exercises.map { ExerciseResponse.from(it) })
+    }
+
+    @GetMapping("/{id}")
+    fun getById(@PathVariable id: Long): ResponseEntity<ExerciseResponse> {
+        val exercise = getExerciseUseCase.execute(id)
+        return ResponseEntity.ok(ExerciseResponse.from(exercise))
     }
 
     @PostMapping
@@ -52,7 +59,9 @@ class ExerciseController(
         currentUser.requireAdmin()
         val command = UpdateExerciseCommand(
             id = id,
-            name = request.name
+            name = request.name,
+            description = request.description,
+            auxiliaryMuscleBodyPartIds = request.auxiliaryMuscleBodyPartIds
         )
         val updated = updateExerciseUseCase.execute(command)
         return ResponseEntity.ok(ExerciseResponse.from(updated))

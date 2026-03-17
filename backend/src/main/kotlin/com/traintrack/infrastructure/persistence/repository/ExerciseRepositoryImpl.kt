@@ -39,12 +39,18 @@ class ExerciseRepositoryImpl(
         val bodyPartEntity = jpaBodyPartRepository.findById(exercise.bodyPartId.value)
             .orElseThrow { IllegalArgumentException("BodyPart not found: ${exercise.bodyPartId.value}") }
 
+        val auxiliaryBodyPartEntities = jpaBodyPartRepository.findAllById(
+            exercise.auxiliaryMuscles.map { it.id.value }
+        )
+
         val entity = if (exercise.id.value == 0L) {
             // New exercise
             ExerciseEntity(
                 name = exercise.name.value,
                 bodyPart = bodyPartEntity,
-                isActive = exercise.isActive
+                isActive = exercise.isActive,
+                description = exercise.description,
+                auxiliaryMuscles = auxiliaryBodyPartEntities.toMutableList()
             )
         } else {
             // Update existing
@@ -52,6 +58,9 @@ class ExerciseRepositoryImpl(
                 .orElseThrow { IllegalArgumentException("Exercise not found: ${exercise.id.value}") }
             existing.name = exercise.name.value
             existing.isActive = exercise.isActive
+            existing.description = exercise.description
+            existing.auxiliaryMuscles.clear()
+            existing.auxiliaryMuscles.addAll(auxiliaryBodyPartEntities)
             existing
         }
 

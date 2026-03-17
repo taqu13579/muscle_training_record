@@ -7,6 +7,9 @@ export const exerciseApi = {
       params: bodyPartId ? { bodyPartId } : undefined,
     }),
 
+  getById: (id: number) =>
+    apiClient.get<Exercise>(`/api/v1/exercises/${id}`),
+
   create: (data: CreateExerciseRequest) =>
     apiClient.post<Exercise>('/api/v1/exercises', data),
 

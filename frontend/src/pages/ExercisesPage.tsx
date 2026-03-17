@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useExercises } from '../hooks/useExercises';
 import { useBodyParts } from '../hooks/useBodyParts';
 import { useAuth } from '../contexts/AuthContext';
@@ -172,16 +173,19 @@ export function ExercisesPage() {
                     </div>
                   ) : (
                     <>
-                      <span className={exercise.isActive ? '' : 'text-gray-400'}>
+                      <Link
+                        to={`/exercises/${exercise.id}`}
+                        className={`hover:text-blue-600 hover:underline ${exercise.isActive ? '' : 'text-gray-400'}`}
+                      >
                         {exercise.name}
-                      </span>
+                      </Link>
                       {isAdmin && (
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => handleEdit(exercise)}
                             className="text-blue-600 hover:text-blue-800 text-sm"
                           >
-                            編集
+                            名前変更
                           </button>
                           <button
                             onClick={() => handleDelete(exercise.id)}

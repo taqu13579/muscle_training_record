@@ -13,7 +13,7 @@
 | DB | MySQL 8.0 (Docker, ホスト側ポート 3307) |
 | 認証 | JWT (30分有効, HS256) + BCrypt |
 | 認可 | ロールベース (USER / ADMIN) |
-| DBマイグレーション | Flyway (V1〜V6) |
+| DBマイグレーション | Flyway (V1〜V7) |
 
 ## 起動方法
 
@@ -60,7 +60,8 @@ frontend/src/
 
 - **users**: id, email, username, password_hash, role (DEFAULT 'USER'), created_at, updated_at
 - **body_parts**: id, name, display_order, created_at, updated_at
-- **exercises**: id, name, body_part_id (FK), is_active, created_at, updated_at
+- **exercises**: id, name, body_part_id (FK), is_active, description (TEXT, NULL), created_at, updated_at
+- **exercise_auxiliary_muscles**: exercise_id (FK), body_part_id (FK) — 複合 PK
 - **training_records**: id, user_id (FK), exercise_id (FK), weight_kg, rep_count, set_count, training_date, memo, created_at, updated_at
 - **body_weights**: id, user_id, weight_kg, recorded_date, memo, created_at, updated_at (UNIQUE: user_id + recorded_date)
 
@@ -74,6 +75,7 @@ frontend/src/
 | V4 | training_records に user_id 追加 |
 | V5 | users に role カラム追加 |
 | V6 | body_weights テーブル作成 |
+| V7 | exercises に description カラム追加 / exercise_auxiliary_muscles テーブル作成 |
 
 ## API エンドポイント
 
@@ -82,8 +84,11 @@ frontend/src/
 | `/api/v1/auth/register` | POST | 不要 | - | ユーザー登録 |
 | `/api/v1/auth/login` | POST | 不要 | - | ログイン (JWT 取得) |
 | `/api/v1/training-records/**` | GET/POST/PUT/DELETE | 必須 | USER以上 | 記録 CRUD |
-| `/api/v1/exercises/` | GET | 不要 | - | 種目一覧 |
-| `/api/v1/exercises/**` | POST/PUT/DELETE | 必須 | ADMIN | 種目管理 |
+| `/api/v1/exercises` | GET | 不要 | - | 種目一覧 |
+| `/api/v1/exercises/{id}` | GET | 不要 | - | 種目詳細 (description, auxiliaryMuscles 含む) |
+| `/api/v1/exercises` | POST | 必須 | ADMIN | 種目作成 |
+| `/api/v1/exercises/{id}` | PUT | 必須 | ADMIN | 種目更新 (name, description, auxiliaryMuscleBodyPartIds) |
+| `/api/v1/exercises/{id}` | DELETE | 必須 | ADMIN | 種目削除 |
 | `/api/v1/body-parts/` | GET | 不要 | - | 部位一覧 |
 | `/api/v1/body-parts/**` | POST/PUT/DELETE | 必須 | ADMIN | 部位管理 |
 | `/api/v1/admin/users` | GET/POST | 必須 | ADMIN | ユーザー一覧・作成 |
@@ -115,11 +120,12 @@ frontend/src/
 | `/` | ホーム・カレンダー | 必須 |
 | `/login` | ログイン | 不要 |
 | `/register` | ユーザー登録 | 不要 |
-| `/exercises` | 種目一覧 (ADMIN は CRUD 可) | 不要 |
+| `/exercises` | 種目一覧 (ADMIN は CRUD 可, 種目名クリックで詳細へ) | 不要 |
+| `/exercises/:id` | 種目詳細 (説明・補助筋表示) | 不要 |
 | `/records/:date` | 日付別記録詳細 | 必須 |
 | `/records/new` | 記録作成 | 必須 |
 | `/records/:id/edit` | 記録編集 | 必須 |
-| `/admin` | 管理画面 (ADMIN のみ) | 必須 |
+| `/admin` | 管理画面 (ADMIN のみ): ユーザー管理・部位管理・種目管理タブ | 必須 |
 | `/stats` | 総負荷量統計グラフ | 必須 |
 
 ### AuthContext
@@ -154,6 +160,8 @@ localStorage に `accessToken`・`user` を保持。
 | `backend/.../application/usecase/training/GetVolumeStatsUseCase.kt` | 日次総負荷量集計ユースケース |
 | `frontend/src/pages/StatsPage.tsx` | 統計ページ (期間・部位・種目フィルタ＋グラフ) |
 | `frontend/src/components/stats/VolumeChart.tsx` | 総負荷量SVG折れ線グラフ |
+| `frontend/src/pages/ExerciseDetailPage.tsx` | 種目詳細ページ (説明・補助筋タグ表示) |
+| `backend/.../application/usecase/exercise/GetExerciseUseCase.kt` | 単一種目取得ユースケース |
 
 ## 例外処理
 
