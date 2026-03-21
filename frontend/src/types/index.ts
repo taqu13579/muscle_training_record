@@ -120,6 +120,14 @@ export interface DailyVolume {
   totalVolume: number;
 }
 
+export interface BodyPartFatigue {
+  bodyPartId: number;
+  bodyPartName: string;
+  currentVolume: number;
+  maxVolume: number;
+  fatiguePercentage: number;
+}
+
 // カレンダー
 export interface CalendarDay {
   date: string;

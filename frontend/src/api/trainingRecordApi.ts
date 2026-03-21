@@ -6,6 +6,7 @@ import type {
   Page,
   CalendarResponse,
   DailyVolume,
+  BodyPartFatigue,
 } from '../types';
 
 export const trainingRecordApi = {
@@ -37,4 +38,7 @@ export const trainingRecordApi = {
     apiClient.get<DailyVolume[]>('/api/v1/training-records/stats/volume', {
       params: { days, ...(exerciseId !== undefined && { exerciseId }), ...(bodyPartId !== undefined && { bodyPartId }) },
     }),
+
+  getBodyPartFatigue: () =>
+    apiClient.get<BodyPartFatigue[]>('/api/v1/training-records/stats/fatigue'),
 };
