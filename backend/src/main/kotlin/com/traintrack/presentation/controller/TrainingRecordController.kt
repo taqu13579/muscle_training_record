@@ -3,6 +3,7 @@ package com.traintrack.presentation.controller
 import com.traintrack.application.usecase.training.*
 import com.traintrack.presentation.request.CreateTrainingRecordRequest
 import com.traintrack.presentation.request.UpdateTrainingRecordRequest
+import com.traintrack.presentation.response.BodyPartFatigueResponse
 import com.traintrack.presentation.response.CalendarDayResponse
 import com.traintrack.presentation.response.CalendarResponse
 import com.traintrack.presentation.response.DailyVolumeResponse
@@ -30,6 +31,7 @@ class TrainingRecordController(
     private val updateTrainingRecordUseCase: UpdateTrainingRecordUseCase,
     private val deleteTrainingRecordUseCase: DeleteTrainingRecordUseCase,
     private val getVolumeStatsUseCase: GetVolumeStatsUseCase,
+    private val getBodyPartFatigueUseCase: GetBodyPartFatigueUseCase,
     private val currentUser: CurrentUser
 ) {
     @GetMapping
@@ -128,6 +130,13 @@ class TrainingRecordController(
         val userId = currentUser.getId()
         deleteTrainingRecordUseCase.execute(userId, id)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/stats/fatigue")
+    fun getBodyPartFatigue(): ResponseEntity<List<BodyPartFatigueResponse>> {
+        val userId = currentUser.getId()
+        val fatigue = getBodyPartFatigueUseCase.execute(userId)
+        return ResponseEntity.ok(fatigue.map { BodyPartFatigueResponse.from(it) })
     }
 
     @GetMapping("/stats/volume")
