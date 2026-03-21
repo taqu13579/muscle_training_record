@@ -45,7 +45,7 @@ export function Header() {
                     統計
                   </Link>
                 )}
-                {isAdmin && (
+                {isAuthenticated && (
                   <Link to="/exercises" className={linkClass('/exercises')}>
                     種目
                   </Link>

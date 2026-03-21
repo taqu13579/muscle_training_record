@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useExercises } from '../hooks/useExercises';
 import { useBodyParts } from '../hooks/useBodyParts';
 import { useAuth } from '../contexts/AuthContext';
+import { ExerciseSearchWidget } from '../components/exercise/ExerciseSearchWidget';
 import type { Exercise } from '../types';
 
 export function ExercisesPage() {
@@ -52,6 +53,10 @@ export function ExercisesPage() {
     acc[bodyPartName].push(exercise);
     return acc;
   }, {} as Record<string, Exercise[]>);
+
+  if (!isAdmin) {
+    return <ExerciseSearchWidget />;
+  }
 
   if (loading) {
     return (

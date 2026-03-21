@@ -120,7 +120,7 @@ frontend/src/
 | `/` | ホーム・カレンダー | 必須 |
 | `/login` | ログイン | 不要 |
 | `/register` | ユーザー登録 | 不要 |
-| `/exercises` | 種目一覧 (ADMIN は CRUD 可, 種目名クリックで詳細へ) | 不要 |
+| `/exercises` | USER: 種目検索ウィジェット (部位フィルタ＋テキスト検索, 種目名クリックで詳細へ) / ADMIN: 種目管理 (CRUD) | 必須 |
 | `/exercises/:id` | 種目詳細 (説明・補助筋表示) | 不要 |
 | `/records/:date` | 日付別記録詳細 | 必須 |
 | `/records/new` | 記録作成 | 必須 |
@@ -161,6 +161,7 @@ localStorage に `accessToken`・`user` を保持。
 | `frontend/src/pages/StatsPage.tsx` | 統計ページ (期間・部位・種目フィルタ＋グラフ) |
 | `frontend/src/components/stats/VolumeChart.tsx` | 総負荷量SVG折れ線グラフ |
 | `frontend/src/pages/ExerciseDetailPage.tsx` | 種目詳細ページ (説明・補助筋タグ表示) |
+| `frontend/src/components/exercise/ExerciseSearchWidget.tsx` | 種目検索ウィジェット (部位フィルタ＋テキスト検索) — USER 向け /exercises で表示 |
 | `backend/.../application/usecase/exercise/GetExerciseUseCase.kt` | 単一種目取得ユースケース |
 
 ## 例外処理
